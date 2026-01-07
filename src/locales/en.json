@@ -75,7 +75,16 @@
         "shareDescription": "Choose a platform or copy the link.",
         "shareCopy": "Copy link",
         "shareCopied": "Link copied",
-        "shareFailed": "Copy failed"
+        "shareFailed": "Copy failed",
+        "modal": {
+            "price": "Price",
+            "usePoints": "Use Points",
+            "pointsDetails": "-{{points}} (Avail: {{available}})",
+            "total": "Total",
+            "payWithPoints": "Pay with Points",
+            "proceedPayment": "Proceed to Payment"
+        },
+        "paymentSuccessPoints": "Payment successful using points!"
     },
     "search": {
         "title": "Search",
@@ -139,7 +148,14 @@
             "save": "Save",
             "lowStockThreshold": "Low stock threshold",
             "saveThreshold": "Save threshold",
-            "shopNameEmpty": "Store name cannot be empty"
+            "shopNameEmpty": "Store name cannot be empty",
+            "checkin": {
+                "title": "Check-in",
+                "rewardTooltip": "Check-in Reward (Points)",
+                "saveReward": "Save Points",
+                "enabled": "Enabled",
+                "disabled": "Disabled"
+            }
         },
         "export": {
             "title": "Data Export",

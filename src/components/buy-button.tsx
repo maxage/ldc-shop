@@ -55,7 +55,7 @@ export function BuyButton({ productId, price, productName, disabled }: BuyButton
             }
 
             if (result.isZeroPrice && result.url) {
-                toast.success("Payment successful using points!")
+                toast.success(t('buy.paymentSuccessPoints'))
                 window.location.href = result.url
                 return
             }
@@ -116,7 +116,7 @@ export function BuyButton({ productId, price, productName, disabled }: BuyButton
 
                     <div className="grid gap-4 py-4">
                         <div className="flex justify-between items-center">
-                            <span className="font-medium">Price</span>
+                            <span className="font-medium">{t('buy.modal.price')}</span>
                             <span>{numericalPrice.toFixed(2)}</span>
                         </div>
 
@@ -131,28 +131,28 @@ export function BuyButton({ productId, price, productName, disabled }: BuyButton
                                 />
                                 <Label htmlFor="use-points" className="flex-1 flex justify-between cursor-pointer">
                                     <span className="flex items-center gap-1">
-                                        Use Points <Coins className="w-3 h-3 text-yellow-500" />
+                                        {t('buy.modal.usePoints')} <Coins className="w-3 h-3 text-yellow-500" />
                                     </span>
                                     <span className="text-muted-foreground">
-                                        -{pointsToUse} (Avail: {points})
+                                        {t('buy.modal.pointsDetails', { points: pointsToUse, available: points })}
                                     </span>
                                 </Label>
                             </div>
                         )}
 
                         <div className="flex justify-between items-center border-t pt-4 font-bold text-lg">
-                            <span>Total</span>
+                            <span>{t('buy.modal.total')}</span>
                             <span>{finalPrice.toFixed(2)}</span>
                         </div>
                     </div>
 
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>
-                            Cancel
+                            {t('common.cancel')}
                         </Button>
                         <Button onClick={handleBuy} disabled={loading}>
                             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            {finalPrice === 0 ? "Pay with Points" : "Proceed to Payment"}
+                            {finalPrice === 0 ? t('buy.modal.payWithPoints') : t('buy.modal.proceedPayment')}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

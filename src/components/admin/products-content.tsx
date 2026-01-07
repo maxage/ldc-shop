@@ -192,7 +192,7 @@ export function AdminProductsContent({ products, stats, shopName, visitorCount, 
 
                         <div className="flex items-center gap-3 border-l pl-3 ml-2">
                             <div className="flex items-center gap-2">
-                                <Label htmlFor="checkin-enable" className="cursor-pointer">Check-in</Label>
+                                <Label htmlFor="checkin-enable" className="cursor-pointer">{t('admin.settings.checkin.title')}</Label>
                                 <Button
                                     id="checkin-enable"
                                     variant={enabledCheckin ? "default" : "outline"}
@@ -201,7 +201,7 @@ export function AdminProductsContent({ products, stats, shopName, visitorCount, 
                                     disabled={savingEnabled}
                                     className={enabledCheckin ? "bg-green-600 hover:bg-green-700" : ""}
                                 >
-                                    {enabledCheckin ? "Enabled" : "Disabled"}
+                                    {enabledCheckin ? t('admin.settings.checkin.enabled') : t('admin.settings.checkin.disabled')}
                                 </Button>
                             </div>
                             {enabledCheckin && (
@@ -212,10 +212,10 @@ export function AdminProductsContent({ products, stats, shopName, visitorCount, 
                                         value={rewardValue}
                                         onChange={(e) => setRewardValue(e.target.value)}
                                         placeholder="10"
-                                        title="Check-in Reward (Points)"
+                                        title={t('admin.settings.checkin.rewardTooltip')}
                                     />
                                     <Button variant="outline" onClick={handleSaveReward} disabled={savingReward}>
-                                        {savingReward ? t('common.processing') : "Save Points"}
+                                        {savingReward ? t('common.processing') : t('admin.settings.checkin.saveReward')}
                                     </Button>
                                 </div>
                             )}
