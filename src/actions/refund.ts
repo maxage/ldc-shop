@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db"
 import { cards, orders, refundRequests, loginUsers } from "@/lib/db/schema"
-import { and, eq, sql } from "drizzle-orm"
+import { and, eq, sql, inArray } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 
 export async function getRefundParams(orderId: string) {
@@ -58,17 +58,13 @@ export async function markOrderRefunded(orderId: string) {
         await tx.update(orders).set({ status: 'refunded' }).where(eq(orders.orderId, orderId))
 
         // Reclaim card back to stock (best effort)
-        // Reclaim card back to stock (best effort)
         if (order.cardKey) {
-            try {
-                const keys = order.cardKey.split('\n').filter((k: string) => k.trim() !== '')
-                if (keys.length > 0) {
-                    const { inArray } = await import("drizzle-orm")
-                    await tx.update(cards).set({ isUsed: false, usedAt: null })
-                        .where(and(eq(cards.productId, order.productId), inArray(cards.cardKey, keys)))
-                }
-            } catch {
-                // ignore
+            const keys = order.cardKey.split('\n').map((k: string) => k.trim()).filter((k: string) => k !== '')
+            if (keys.length > 0) {
+                // Remove duplicates to prevent any SQL oddities
+                const uniqueKeys = Array.from(new Set(keys))
+                await tx.update(cards).set({ isUsed: false, usedAt: null })
+                    .where(and(eq(cards.productId, order.productId), inArray(cards.cardKey, uniqueKeys)))
             }
         }
 

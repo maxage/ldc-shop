@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db"
 import { cards, orders, refundRequests, loginUsers } from "@/lib/db/schema"
-import { and, eq, sql } from "drizzle-orm"
+import { and, eq, sql, inArray } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 
 export async function getRefundParams(orderId: string) {
@@ -43,7 +43,7 @@ export async function markOrderRefunded(orderId: string) {
         throw new Error("Unauthorized")
     }
 
-    // No transaction - D1 doesn't support SQL transactions
+    // No transaction - D1 doesn't support SQL transactions in HTTP api easily
     const order = await db.query.orders.findFirst({ where: eq(orders.orderId, orderId) })
     if (!order) throw new Error("Order not found")
 
@@ -58,17 +58,12 @@ export async function markOrderRefunded(orderId: string) {
     await db.update(orders).set({ status: 'refunded' }).where(eq(orders.orderId, orderId))
 
     // Reclaim card back to stock (best effort)
-    // Reclaim card back to stock (best effort)
     if (order.cardKey) {
-        try {
-            const keys = order.cardKey.split('\n').filter((k: string) => k.trim() !== '')
-            if (keys.length > 0) {
-                const { inArray } = await import("drizzle-orm")
-                await db.update(cards).set({ isUsed: false, usedAt: null })
-                    .where(and(eq(cards.productId, order.productId), inArray(cards.cardKey, keys)))
-            }
-        } catch {
-            // ignore
+        const keys = order.cardKey.split('\n').map((k: string) => k.trim()).filter((k: string) => k !== '')
+        if (keys.length > 0) {
+            const uniqueKeys = Array.from(new Set(keys))
+            await db.update(cards).set({ isUsed: false, usedAt: null })
+                .where(and(eq(cards.productId, order.productId), inArray(cards.cardKey, uniqueKeys)))
         }
     }
 
