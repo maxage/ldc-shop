@@ -45,7 +45,11 @@ function escapeString(val: string): string {
 function formatSqlValue(val: any): string {
   if (val === null || val === undefined) return "NULL"
   if (typeof val === "boolean") return val ? "1" : "0"
-  if (val instanceof Date) return "'" + val.toISOString().replace("T", " ").replace("Z", "") + "'"
+  if (val instanceof Date) {
+    // Check if valid date
+    if (isNaN(val.getTime())) return "NULL"
+    return "'" + val.toISOString().replace("T", " ").replace("Z", "") + "'"
+  }
   if (typeof val === "number") return String(val)
   if (typeof val === "string") return escapeString(val)
   return escapeString(JSON.stringify(val))
